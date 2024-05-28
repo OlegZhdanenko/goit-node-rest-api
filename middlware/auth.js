@@ -5,7 +5,7 @@ import user from "../models/user.js";
  function auth(req, res, next) {
 
     const authorizationHeader = req.headers.authorization;
-    console.log({authorizationHeader});
+ 
     if (typeof authorizationHeader==="undefined") {
         return res.status(401).send({message:"Invalid token"})
     };
@@ -15,7 +15,7 @@ import user from "../models/user.js";
     const [bearer,token] = authorizationHeader.split(" ",2);
 
     
-    console.log({ bearer, token });
+   
     if (bearer!=="Bearer") {
         return res.status(401).send({message:"Invalid token "})
     };
@@ -32,7 +32,7 @@ try {
         if (user.token === token) {
         return res.status(401).send({message:"Invalid token "})
     };
-    
+
 } catch (error) {
     next(error)
         };

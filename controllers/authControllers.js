@@ -71,7 +71,7 @@ async function logout(req, res, next) {
     }
     res.send("logout")
 }
-export const current = async (req, res) => {
+export const current = async (req, res,next) => {
     
 
     const authorizationHeader = req.headers.authorization.split(" ");
@@ -87,4 +87,4 @@ try {
 }
 }
 
-export default { register, login, logout }; 
+export default { register, login, logout, current }; 
