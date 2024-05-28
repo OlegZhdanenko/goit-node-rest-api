@@ -53,11 +53,38 @@ async function login(req, res, next) {
     });
         };
         const token = jwt.sign({ id: user._id, name: user.name }, process.env.JWT_SECRET, { expiresIn: "1d" })
-        console.log({token});
+        
+        await User.findByIdAndUpdate(user._id,{token})
+        
         res.status(200).send({ token})
     } catch (error) {
         next(error)
     }
 }
 
-export default { register ,login}; 
+async function logout(req, res, next) {
+    try {
+        await User.findByIdAndUpdate(req.user._id, { token: null })
+        res.status( 204).end()
+    } catch (error) {
+        next(error)
+    }
+    res.send("logout")
+}
+export const current = async (req, res) => {
+    
+
+    const authorizationHeader = req.headers.authorization.split(" ");
+    const token = authorizationHeader[1];
+
+    const data = jwt.decode(token);
+try {
+    const result = await User.findById(data.id);
+
+    res.status(200).send({ email: result.email });
+} catch (error) {
+    next(error)
+}
+}
+
+export default { register, login, logout }; 

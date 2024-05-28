@@ -1,5 +1,8 @@
-import jwt from "jsonwebtoken"
-function auth(req, res, next) {
+import jwt from "jsonwebtoken";
+import User from "../models/user.js"
+import user from "../models/user.js";
+
+ function auth(req, res, next) {
 
     const authorizationHeader = req.headers.authorization;
     console.log({authorizationHeader});
@@ -8,25 +11,37 @@ function auth(req, res, next) {
     };
 
 
-    const arrayOfAuthorizationHeader = authorizationHeader.split(" ");
-    const token = arrayOfAuthorizationHeader[2];
-    const bearer = arrayOfAuthorizationHeader[0];
-    console.log({arrayOfAuthorizationHeader});
-    // const [bearer, token] = authorizationHeader.split(" ", 2);
+    
+    const [bearer,token] = authorizationHeader.split(" ",2);
+
+    
     console.log({ bearer, token });
     if (bearer!=="Bearer") {
-        return res.status(401).send({message:"Invalid token2"})
+        return res.status(401).send({message:"Invalid token "})
     };
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
         if (err) {
-            return res.status(401).send({ message: "Invalid token3" });
+
+            return res.status(401).send({ message: "Invalid token " });
         };
+try {
+    const user = await User.findById(decode.id)
+        if (user === null) {
+        return res.status(401).send({message:"Invalid token "})
+    };
+        if (user.token === token) {
+        return res.status(401).send({message:"Invalid token "})
+    };
+    
+} catch (error) {
+    next(error)
+        };
+       
         console.log({ decode });
         
         req.user = {
-            id: decode.id,
-            name:decode.name
+            id: user.id,
+            name:user.name
 }
 
 next();
