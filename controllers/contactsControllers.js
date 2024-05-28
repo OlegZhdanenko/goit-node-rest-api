@@ -3,6 +3,8 @@ import Contact from "../models/contact.js"
 
 
 export const getAllContacts = async (req, res, next) => {
+    
+    // console.log(req.user);
     try {
         const contact = await Contact.find()
         res.json(contact)
@@ -39,8 +41,11 @@ export const deleteContact = async (req, res) => {
 
 export const createContact = async (req, res, next) => {
     const contact = {
-        ...req.body,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
         favorite: false,
+        owner:req.user.id
     }
     try {
         const result = await Contact.create(contact);
