@@ -38,7 +38,7 @@ async function login(req, res, next) {
         const user =await User.findOne({ email: emailToLowerCase })
     
         if (user === null) {
-            console.log("email");
+            
         return  res.status(401).send({
                 "message": "Email or password is wrong"
             });
@@ -47,7 +47,7 @@ async function login(req, res, next) {
         const isMatch = await bcrypt.compare(password, user.password);
     
         if (isMatch === false) {
-    console.log("isMatch");
+   
     return res.status(401).send({
         "message": "Email or password is wrong"
     });

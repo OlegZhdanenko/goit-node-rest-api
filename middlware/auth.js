@@ -22,22 +22,22 @@ import user from "../models/user.js";
     jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
         if (err) {
 
-            return res.status(401).send({ message: "Invalid token " });
+            return res.status(401).send({ message: "Invalid token1 " });
         };
 try {
     const user = await User.findById(decode.id)
         if (user === null) {
-        return res.status(401).send({message:"Invalid token "})
+        return res.status(401).send({message:"Invalid token2 "})
     };
-        if (user.token === token) {
-        return res.status(401).send({message:"Invalid token "})
+        if (user.token !== token) {
+        return res.status(401).send({message:"Invalid token3 "})
     };
 
 } catch (error) {
     next(error)
         };
        
-        console.log({ decode });
+        
         
         req.user = {
             id: user.id,
