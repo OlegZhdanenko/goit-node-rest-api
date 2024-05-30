@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import path from "node:path";
 import * as fs  from "node:fs/promises";
 import Jimp from "jimp";
+import jwt from "jsonwebtoken"
 async function uploadAvatar(req, res, next) {
     try {
         await fs.rename(req.file.path,
