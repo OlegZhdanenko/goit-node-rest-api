@@ -63,4 +63,21 @@ async function updateAvatar(req, res, next){
         next(error)
     }
 }
-export default {uploadAvatar,getAvatar,updateAvatar};
+
+async function verify(req, res, next){
+    const {verificationToken}=req.params
+    console.log({verificationToken});
+    try {
+    const user=  await User.findOneAndUpdate({verificationToken:verificationToken}, {verify: true, verificationToken: null},{new:true});
+    
+    console.log({user});
+    if (user===null) {
+        return res.status(404).send({message:"User not found"});
+    }
+    res.status(200).send({message:"Verification successful"});
+    } catch (error) {
+        next(error)
+    }
+    
+}
+export default {uploadAvatar,getAvatar,updateAvatar,verify};

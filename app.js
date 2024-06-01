@@ -7,15 +7,17 @@ import userRouter from "./routes/auth.js";
 import "./DB/db.js"
 import authMiddelware from "./middlware/auth.js"
 import avatarRouter from "./routes/userRouter.js"
+import UserController from "./controllers/user.js"
 const app = express();
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.get("/api/users/verify/:verificationToken",UserController.verify)
 app.use("/api/contacts",authMiddelware, contactsRouter);
 app.use("/api/users", userRouter);
-app.use("/api/users", authMiddelware, avatarRouter);
+app.use("/api/users", avatarRouter);
 app.use("/avatars",express.static(path.resolve("public/avatars")))
 
 app.use((_, res) => {
@@ -26,6 +28,7 @@ app.use((err, req, res, next) => {
     const { status = 500, message = "Server error" } = err;
     res.status(status).json({ message });
 });
+
 
 
 export default app;
