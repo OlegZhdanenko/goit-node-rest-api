@@ -66,11 +66,12 @@ async function updateAvatar(req, res, next){
 
 async function verify(req, res, next){
     const {verificationToken}=req.params
-    console.log({verificationToken});
-    try {
-    const user=  await User.findOneAndUpdate({verificationToken:verificationToken}, {verify: true, verificationToken: null},{new:true});
     
-    console.log({user});
+    try {
+    const user =  await User.findOneAndUpdate({verificationToken:verificationToken}, 
+        {verify: true, verificationToken: null},{new:true});
+    
+
     if (user===null) {
         return res.status(404).send({message:"User not found"});
     }
@@ -79,5 +80,18 @@ async function verify(req, res, next){
         next(error)
     }
     
+};
+export const resendMail = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ email: req.body.email });
+        if (!user) throw HttpError(401, 'User doesnt exist');
+        if (user.verificationToken = null) res.status(401).send({message:"User already verifycated"})
+        await sendEMail(user.email, user.verificationToken)
+        res.status(200).json({
+            message: "Verification email sent"
+        })
+    } catch (err) {
+        next(err)
+    }
 }
-export default {uploadAvatar,getAvatar,updateAvatar,verify};
+export default {uploadAvatar,getAvatar,updateAvatar,verify,resendMail};

@@ -14,7 +14,9 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.post("/users/verify",authMiddelware,UserController.resendMail)
 app.get("/api/users/verify/:verificationToken",UserController.verify)
+
 app.use("/api/contacts",authMiddelware, contactsRouter);
 app.use("/api/users", userRouter);
 app.use("/api/users", avatarRouter);
